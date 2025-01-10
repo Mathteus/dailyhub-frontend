@@ -1,8 +1,7 @@
 import type { NextConfig } from "next";
-import withPWAInit from "@ducanh2912/next-pwa";
 
-const nextconfig: NextConfig  = withPWAInit({
-  
-});
+const nextconfig: NextConfig = {
+  poweredByHeader: false
+};
 
 export default nextconfig;

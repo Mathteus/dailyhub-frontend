@@ -1,59 +1,49 @@
+import { Button } from "@/components/ui/button"
 import {
-	Button,
-	Modal,
-	ModalBody,
-	ModalContent,
-	ModalFooter,
-	ModalHeader,
-	useDisclosure,
-} from '@nextui-org/react';
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import React from "react"
 
 interface IDialog {
-	btnText: string;
+	ButtonOpen: React.ReactNode;
 	title: string;
+	description?: string;
 	children: React.ReactNode;
-	hasCloseBtn?: boolean;
-	size:
-		| 'xs'
-		| 'sm'
-		| 'md'
-		| 'lg'
-		| 'xl'
-		| '2xl'
-		| '3xl'
-		| '4xl'
-		| '5xl'
-		| 'full';
+	textOk: string;
+	onOK: () => void;
 }
 
-export default function App({
-	btnText,
-	title,
-	children,
-	size = 'md',
-	hasCloseBtn = false,
-}: IDialog) {
-	const { isOpen, onOpen, onOpenChange } = useDisclosure();
-	return (
-		<>
-			<Button onPress={onOpen}>asdsds</Button>
-			<Modal size={size} isOpen={isOpen} onOpenChange={onOpenChange}>
-				<ModalContent>
-					{(onClose) => (
-						<>
-							<ModalHeader className='flex flex-col gap-1'>{title}</ModalHeader>
-							<ModalBody>{children}</ModalBody>
-							<ModalFooter>
-								{hasCloseBtn && (
-									<Button color='danger' variant='light' onPress={onClose}>
-										Close
-									</Button>
-								)}
-							</ModalFooter>
-						</>
-					)}
-				</ModalContent>
-			</Modal>
-		</>
-	);
+export function DialogDemo({ ButtonOpen, title, children, textOk, onOK, description='' }: IDialog) {
+  return (
+    <Dialog>
+      <DialogTrigger asChild>
+        {ButtonOpen}
+      </DialogTrigger>
+      <DialogContent className="sm:max-w-[425px]">
+        <DialogHeader>
+          <DialogTitle>{title}</DialogTitle>
+          <DialogDescription>
+            {description}
+          </DialogDescription>
+        </DialogHeader>
+        {children}
+        <DialogFooter>
+					<DialogTrigger asChild>
+          	<Button type="button" onClick={onOK}>{textOk}</Button>
+					</DialogTrigger>
+					<DialogTrigger asChild>
+						<Button variant="destructive">Close</Button>
+					</DialogTrigger>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  )
 }

@@ -7,27 +7,25 @@ import Payment from './tabs/payme';
 import Tasks from './tabs/tasks';
 
 interface IContent {
-	bgColor: string;
-	textColor: string;
 	currentPage: 1 | 2 | 3 | 4 | 5 | 6;
 }
 
 interface IColor {
-	bgColor: string;
-	textColor: string;
+	bgcolor: string;
+	textcolor: string;
 }
 
-const AreaMain = styled.main<IColor>`
-	background-color: ${(props) => props.bgColor};
-	color: ${(props) => props.textColor};
+const AreaMain = styled.main`
+	background-color: #f1f5f9;
+	color: #0c0a09;
 	padding: 1rem;
 	border-radius: 16px;
 `;
 
-export default function Content({ bgColor, textColor, currentPage }: IContent) {
+export default function Content({ currentPage }: IContent) {
 	if (currentPage === 1) {
 		return (
-			<AreaMain bgColor={bgColor} textColor={textColor}>
+			<AreaMain>
 				<News />
 			</AreaMain>
 		);
@@ -35,7 +33,7 @@ export default function Content({ bgColor, textColor, currentPage }: IContent) {
 
 	if (currentPage === 2) {
 		return (
-			<AreaMain bgColor={bgColor} textColor={textColor}>
+			<AreaMain>
 				<Money />
 			</AreaMain>
 		);
@@ -43,7 +41,7 @@ export default function Content({ bgColor, textColor, currentPage }: IContent) {
 
 	if (currentPage === 3) {
 		return (
-			<AreaMain bgColor={bgColor} textColor={textColor}>
+			<AreaMain>
 				<Tasks />
 			</AreaMain>
 		);
@@ -51,7 +49,7 @@ export default function Content({ bgColor, textColor, currentPage }: IContent) {
 
 	if (currentPage === 4) {
 		return (
-			<AreaMain bgColor={bgColor} textColor={textColor}>
+			<AreaMain>
 				<Blog />
 			</AreaMain>
 		);
@@ -59,7 +57,7 @@ export default function Content({ bgColor, textColor, currentPage }: IContent) {
 
 	if (currentPage === 5) {
 		return (
-			<AreaMain bgColor={bgColor} textColor={textColor}>
+			<AreaMain>
 				<Settings />
 			</AreaMain>
 		);
@@ -67,7 +65,7 @@ export default function Content({ bgColor, textColor, currentPage }: IContent) {
 
 	if (currentPage === 6) {
 		return (
-			<AreaMain bgColor={bgColor} textColor={textColor}>
+			<AreaMain>
 				<Payment />
 			</AreaMain>
 		);

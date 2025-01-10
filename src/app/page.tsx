@@ -21,7 +21,7 @@ export default function Home() {
 				currentPage={page}
 				changePage={handlerPage}
 			/>
-			<Content bgColor='#f1f5f9' textColor='#0c0a09' currentPage={page} />
+			<Content currentPage={page} />
 		</Background>
 	);
 }
