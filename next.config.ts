@@ -1,7 +1,8 @@
 import type { NextConfig } from "next";
 
 const nextconfig: NextConfig = {
-  poweredByHeader: false
+  poweredByHeader: false,
+  reactStrictMode: false,
 };
 
 export default nextconfig;

@@ -1,7 +1,8 @@
 'use client';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import Kanban from './kaban';
-import SelectDate from './select-date';
+import SelectDate from '@/components/select-date';
+import { useTaskStorage } from '@/storage/task';
 
 interface IInside {
 	show: boolean;
@@ -18,12 +19,15 @@ function startInside(): IInside {
 export default function Tasks() {
 	const [date, changeDate] = useState<string>();
 	const [inside, changeInside] = useState<IInside>(startInside());
+	const taskStorage = useTaskStorage.getState();
 
 	const gotoCalendar = () => {
 		changeInside(startInside());
 	}
 
 	const handlerChangeDate = (newDate: string) => {
+		taskStorage.clearTasks();
+		taskStorage.setDay(newDate);
 		changeDate(newDate);
 		changeInside({
 			show: true,
@@ -32,8 +36,8 @@ export default function Tasks() {
 	}
 
 	if (inside.show) {
-		return <Kanban date={inside.date} back={gotoCalendar} />;
+		return <Kanban back={gotoCalendar} />;
 	}
 
-	return <SelectDate changeDate={handlerChangeDate} />;
+	return <SelectDate type='month' changeDate={handlerChangeDate} />;
 }

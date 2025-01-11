@@ -1,18 +1,16 @@
 import { DialogDemo } from '@/components/dialog';
-import { gerateRandomString, addTask, getTaskByDay, removeTaskByIDAndDay } from '@/utility';
+import { useTaskStorage, type Task } from '@/storage/task';
+import { gerateRandomString } from '@/utility';
 import { Button, Chip, Input, Textarea, Tooltip, useDisclosure } from '@nextui-org/react';
 import { useEffect, useState } from 'react';
 import { BsPlusCircle } from 'react-icons/bs';
 import { FaArrowAltCircleLeft, FaTrashAlt } from 'react-icons/fa';
 
-interface IAddItem {
-	addItem: (textName: string, textBox: string) => void;
-}
-
-function ModalAddTask({ addItem }: IAddItem) {
+function ModalAddTask() {
 	const [textName, changeName] = useState<string>('');
 	const [textBox, changeText] = useState<string>('');
 	const [nameInputValid, changeValidName] = useState<boolean>(false);
+	const taskStorage = useTaskStorage.getState();
 
 	const VerifyName = (text: string) => {
 		changeName(text);
@@ -20,10 +18,17 @@ function ModalAddTask({ addItem }: IAddItem) {
 	}
 
 	const handlerCofirm = () => {
-		addItem(textName, textBox);
+		taskStorage.addTask({
+			id: gerateRandomString(8),
+			date: taskStorage.date,
+			status: 'todo',
+			name: textName,
+			description: textBox,
+		});
 		changeName('');
 		changeText('');
 		changeValidName(false);
+		taskStorage.toUpdate();
 	}
 	
 	return (
@@ -49,7 +54,7 @@ function ModalAddTask({ addItem }: IAddItem) {
 						errorMessage='Digite mais que 3 Caracteres !'
 						isInvalid={nameInputValid}
 						value={textName}
-						onValueChange={e => VerifyName(e)}
+						onValueChange={VerifyName}
 					/>
 				</div>
 				<div>
@@ -68,34 +73,42 @@ function ModalAddTask({ addItem }: IAddItem) {
 	)
 }
 
-export interface Task {
-	id: string;
-	name: string;
-	status: 'todo' | 'doing' | 'done';
-	description: string;
-	date: string | Date;
-}
-
 interface IItem {
 	item: Task;
-	deleteItem: (item: Task) => void;
 }
 
-function ItemTask({ item, deleteItem }: IItem) {
+function ItemTask({ item }: IItem) {
 	const [textName, changeName] = useState<string>(item.name);
 	const [textBox, changeText] = useState<string>(item.description);
 	const [nameInputValid, changeValidName] = useState<boolean>(false);
+	const taskStorage = useTaskStorage.getState();
 
 	const VerifyName = (text: string) => {
 		changeName(text);
 		changeValidName(text.length < 3);
 	}
 
+	const deleteItem = () => {
+		taskStorage.removeTask(item);
+		taskStorage.toUpdate();
+	}
+
+	const updateItem = () => {
+		taskStorage.updateTask({
+			id: item.id,
+			date: taskStorage.date,
+			status: item.status,
+			description: textBox,
+			name: textName
+		});
+		taskStorage.toUpdate();
+	}
+
 	return (
 		<>
 			<DialogDemo 
 				title='Alterar Tarefas' 
-				onOK={() => {}}
+				onOK={updateItem}
 				textOk='Alterar'
 				description='Verificar Tarefa'
 				ButtonOpen={
@@ -107,7 +120,7 @@ function ItemTask({ item, deleteItem }: IItem) {
 						<Button 
 							type="button" 
 							isIconOnly 
-							onPress={e => deleteItem(item)}
+							onPress={deleteItem}
 							className='hover:text-red-600'>
 							<FaTrashAlt />
 						</Button>
@@ -147,12 +160,10 @@ function ItemTask({ item, deleteItem }: IItem) {
 interface ITower {
 	name: string;
 	color: 'success' | 'primary' | 'warning';
-	status: 'todo' | 'doing' | 'done';
 	list: Task[];
-	deleteItem: (item: Task) => void;
 }
 
-function Tower({ name, color, list, deleteItem }: ITower) {
+function Tower({ name, color, list }: ITower) {
 	return (
 		<section className='text-center bg-[#101204] p-2 rounded-xl'>
 			<div className='flex justify-around items-center'>
@@ -161,57 +172,38 @@ function Tower({ name, color, list, deleteItem }: ITower) {
 				</Chip>
 			</div>
 			<div className='min-h-[74vh] min-w-[20vw] my-4 overscroll-contain flex flex-col gap-6'>
-				<>
-					{list.map(e => {
-						return <ItemTask key={e.id} item={e} deleteItem={deleteItem} />
-					})}
-				</>
+				{list.map(e => {
+					return <ItemTask key={e.id} item={e} />
+				})}
 			</div>
 		</section>
 	);
 }
 
 interface IKanban {
-	date: string;
 	back: () => void;
 }
 
-export default function Kanban({ date, back }: IKanban) {
+export default function Kanban({ back }: IKanban) {
 	const [listTodo, setListTodo] = useState<Task[]>([]);
 	const [listDoing, setListDoing] = useState<Task[]>([]);
 	const [listDone, setListDone] = useState<Task[]>([]);
-	const { isOpen, onOpen, onOpenChange } = useDisclosure();
-	const [showModal, changeVisibility] = useState<boolean>(false);
+	const taskStorage = useTaskStorage.getState();
 
 	const loadTasks = () => {
-		const talsForToday = getTaskByDay(date);
+		const talsForToday = taskStorage.getTasksByDay();
 		if (talsForToday) {
-			const todos: Task[] = talsForToday.filter(e => e.status === 'todo') as Task[];
-			const doings: Task[] = talsForToday.filter(e => e.status === 'doing') as Task[];
-			const dones: Task[] = talsForToday.filter(e => e.status === 'done') as Task[];
+			const todos = talsForToday.filter(e => e.status === 'todo') as Task[];
+			const doings = talsForToday.filter(e => e.status === 'doing') as Task[];
+			const dones = talsForToday.filter(e => e.status === 'done') as Task[];
 			setListTodo(todos);
 			setListDoing(doings);
-			setListDoing(dones);
+			setListDone(dones);
 		}
 	} 
 
-	useEffect(loadTasks, []); 
-
-	const addTaskToList = (name: string, description: string) => {
-		addTask({
-			id: gerateRandomString(6),
-			name,
-			description,
-			status: 'todo',
-			date: date,
-		});
-		loadTasks();
-	}
-
-	const deleteItem = (item: Task) => {
-		removeTaskByIDAndDay(item);
-		loadTasks();
-	}
+	useEffect(loadTasks, []);
+	taskStorage.setCallback(loadTasks);
 
 	return (
 		<>
@@ -223,13 +215,13 @@ export default function Kanban({ date, back }: IKanban) {
 						</Button>
 					</div>
 				</Tooltip>
-				<h1>{date}</h1>
-				<ModalAddTask addItem={addTaskToList} />
+				<h1>{taskStorage.date}</h1>
+				<ModalAddTask />
 			</header>
 			<main className='flex gap-8 justify-around items-center'>
-				<Tower name='A Fazer' color='warning' list={listTodo} status='todo' deleteItem={deleteItem} />
-				<Tower name='Fazendo' color='primary' list={listDoing} status='doing' deleteItem={deleteItem} />
-				<Tower name='Pronto' color='success' list={listDone} status='done' deleteItem={deleteItem} />
+				<Tower name='A Fazer' color='warning' list={listTodo} />
+				<Tower name='Fazendo' color='primary' list={listDoing}  />
+				<Tower name='Pronto' color='success' list={listDone} />
 			</main>
 		</>
 	);

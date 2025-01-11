@@ -4,12 +4,13 @@ import type { Dayjs } from 'dayjs';
 
 interface ICalendar {
 	changeDate: (newDate: string) => void;
+	type: 'month' | 'year';
 }
 
-export default function SelectDate({ changeDate }: ICalendar) {
-	const onPanelChange = (value: Dayjs, mode: CalendarProps<Dayjs>['mode']) => {
-		alert(`${value.format('YYYY-MM-DD')} ${JSON.stringify(mode)}`);
-	};
+export default function SelectDate({ changeDate, type }: ICalendar) {
+	// const onPanelChange = (value: Dayjs, mode: CalendarProps<Dayjs>['mode']) => {
+	// 	alert(`${value.format('YYYY-MM-DD')} ${JSON.stringify(mode)}`);
+	// };
 
 	const onChangeCalendar = (value: Dayjs) => {
 		changeDate(value.format('YYYY-MM-DD'));
@@ -17,7 +18,7 @@ export default function SelectDate({ changeDate }: ICalendar) {
 
 	return (
 		<section>
-			<Calendar onPanelChange={onPanelChange} onSelect={onChangeCalendar} />
+			<Calendar mode={type} onSelect={onChangeCalendar} />
 		</section>
 	);
 }
