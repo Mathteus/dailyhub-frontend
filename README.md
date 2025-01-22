@@ -1,4 +1,4 @@
-# Frontend do Dailyhub
+# Frontend do Dailyhub (WIP)
 - Site feito em NextJS, como aplicativo instalvel (PWA) Typescript como linguagem.
 - Estilização feita em Styled-Components e Tailwind CSS.
 - Estados Globais usando zustand.
@@ -8,26 +8,27 @@
 - Bun para runtime JS.
 
 
-## Para testar pode siga os seguintes passos ou teste online [DailyHub](https://dailyhub.space).
+## Features:
 
-1. Clone o repositório.
-```
-git clone https://github.com/Mathteus/dailyhub-frontend.git
-```
-
-1. Instale os pacotes.
-```
-bun install
-```
-
-1. Rode o servidor do NextJS.
-```
-bun --bun dev
-```
-
-1. Acesse a página do site.
-```
-http://localhost:3210
-```
-
-### OBS: a função de instalar (PWA) pode não funcionar em HTTP, algumas funções podem não funcionar sem o servidor do dailyhub, para obter acesse [DailyHub Backend](https://github.com/Mathteus/dailyhub-backend).
+### Core:
+- [ ] Página Tarefas.
+  - [x] Calendário Seleção do dia.
+  - [x] Quadro com as tarefas.
+  - [ ] Criar, deletar, mover tarefas.
+- [ ] Página Finanças.
+  - [x] Calendário Seleção do dia.
+  - [ ] Vizualição em resumo dos gastos.
+  - [ ] Tabela listando os gastos.
+  - [ ] criação, edição, remover gastos.
+- [ ] Página Noticias.
+  - [ ] Temperatura local.
+  - [ ] Noticias do dia.
+- [ ] Página Blog.
+  - [ ] Buscar post por usuário.
+  - [ ] Buscar Post por Id.
+  - [ ] Criar Posts.
+  - [ ] Curtir Posts.
+- [ ] Página Configurações.
+  - [ ] trocar idioma.
+  - [ ] trocar cores da página.
+  - [ ] Registro - Login de usuários.
