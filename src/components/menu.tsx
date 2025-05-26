@@ -2,8 +2,8 @@ import { funEmoji } from '@dicebear/collection';
 import { createAvatar } from '@dicebear/core';
 import { Button } from '@nextui-org/react';
 import { Tooltip } from '@nextui-org/tooltip';
+import { useQuery } from '@tanstack/react-query';
 import Image from 'next/image';
-import { useMemo } from 'react';
 import { FaBook, FaGithub, FaLinkedin } from 'react-icons/fa';
 import styled from 'styled-components';
 
@@ -30,9 +30,11 @@ const ItemMenu = styled.div<IItem>`
 	}
 `;
 
+type IPage =  1 | 2 | 3 | 4 | 5 | 6;
+
 interface IMenu {
-	currentPage: 1 | 2 | 3 | 4 | 5 | 6;
-	changePage: (newPage: 1 | 2 | 3 | 4 | 5 | 6) => void;
+	currentPage: IPage;
+	changePage: (newPage: IPage) => void;
 	username: string;
 	tagname: string;
 }
@@ -67,26 +69,32 @@ export default function Menu({
 		changePage(6);
 	}
 
-	// biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
-	const avatar = useMemo(() => {
+	const loadAvatar = async () => {
 		return createAvatar(funEmoji, {
 			seed: username,
 			scale: 100,
 			radius: 20,
 			backgroundType: ['gradientLinear'],
 		}).toDataUri();
-	}, []);
+	};
+
+	const { data, isSuccess } = useQuery({
+		queryKey: ['avatar'],
+		queryFn: loadAvatar,
+		refetchOnWindowFocus: true,
+		refetchOnReconnect: true,
+	});
 
 	return (
 		<aside>
 			<section>
-				<Image src={avatar} alt='Imagem Perfil' width={120} height={120} />
+				{isSuccess && <Image src={String(data)} alt='Imagem Perfil' width={120} height={120} />}
 				<div>
 					<strong>{username}</strong>
 				</div>
 				<div>@{tagname}</div>
 			</section>
-			<section className='flex flex-col gap-6 text-center mt-14'>
+			<section className='flex flex-col gap-4 text-center mt-8'>
 				<ItemMenu selected={currentPage === 1}>
 					<button type='button' onClick={handlerNews}>
 						Noticias

@@ -1,27 +1,26 @@
 'use client';
-import styled from 'styled-components';
+
+import styled from "styled-components";
 
 interface IBackground {
-	color: string;
 	children: React.ReactNode;
 }
 
-interface Icolor {
-	color: string;
-}
-
-const Container = styled.main<Icolor>`
-	background-color: ${(props) => props.color};
-	display: grid;
-	grid-template-columns: 20% 80%;
+const Container = styled.main`
 	position: fixed;
-	letf: 0;
+	left: 0;
 	top: 0;
-	min-width: 100vw;
-	min-height: 100vh;
+	max-width: 50%;
+	min-height: 50vh;
 	padding: 1rem;
+	display: flex;
+	border-color: #000;
 `;
 
-export default function Background({ color, children }: IBackground) {
-	return <Container color={color}>{children}</Container>;
+export default function Background({ children }: IBackground) {
+	return (
+		<Container>
+			{children}
+		</Container>
+	);
 }

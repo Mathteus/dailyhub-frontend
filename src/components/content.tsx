@@ -16,7 +16,7 @@ interface IColor {
 }
 
 const AreaMain = styled.main`
-	background-color: #f1f5f9;
+	background-color: #fff;
 	color: #0c0a09;
 	padding: 1rem;
 	border-radius: 16px;

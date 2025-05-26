@@ -2,8 +2,7 @@ import type { Metadata, Viewport } from 'next';
 import '@/styles/globals.css';
 import { APP_NAME, APP_DEFAULT_TITLE, APP_TITLE_TEMPLATE, APP_DESCRIPTION } from '@/config/site';
 import { montserrat } from '@/styles';
-import { Providers } from './providers';
-
+import { Providers } from '@/app/providers';
 
 export const metadata: Metadata = {
 	applicationName: APP_NAME,
@@ -39,11 +38,11 @@ export const metadata: Metadata = {
 	  },
 	  description: APP_DESCRIPTION,
 	},
-  };
+};
   
-  export const viewport: Viewport = {
+export const viewport: Viewport = {
 	themeColor: "#fff",
-  };
+};
 
 export default function RootLayout({
 	children,
@@ -53,7 +52,9 @@ export default function RootLayout({
 	return (
 		<html lang='pt-BR'>
 			<body className={`${montserrat.variable} antialiased dark`}>
-				<Providers>{children}</Providers>
+				<Providers>
+					{children}
+				</Providers>
 			</body>
 		</html>
 	);

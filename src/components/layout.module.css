@@ -1,0 +1,5 @@
+.gridMain {
+  display: grid;
+  grid-template-columns: 18% 81%;
+  column-gap: 1rem;
+}
